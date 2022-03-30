@@ -17,7 +17,7 @@ export default function LogInScreen() {
     function postInputs(e) {
         e.preventDefault();
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", logInData);
-        request.then(() => navigate("/habitos"))
+        request.then((response) => navigate("/habitos", { state: response.data }))
         request.catch((response) => alert(
         `Algo deu errado, por favor recarregue a página e tente novamente!
        
