@@ -14,11 +14,11 @@ export default function HabitsScreen() {
     const { infosLogin } = useContext(IfosLoginContext);
 
     const [userHabitsList, setUserHabitsList] = useState({ data: [] })
-    const [isCreateHabitClicked, setIsCreateHabitClicked] = useState(false);
-
-    function toggleCreateHabit() {
-        isCreateHabitClicked ? setIsCreateHabitClicked(false) : setIsCreateHabitClicked(true);
-    }
+    // const [isCreateHabitClicked, setIsCreateHabitClicked] = useState(false);
+    console.log(userHabitsList)
+    // function toggleCreateHabit() {
+    //     isCreateHabitClicked ? setIsCreateHabitClicked(false) : setIsCreateHabitClicked(true);
+    // }
 
     useEffect(() => {
         const config = {
@@ -38,11 +38,8 @@ export default function HabitsScreen() {
         <>
             <Header picture={infosLogin.image} />
             <Main>
-                <nav>
-                    <h2>Meus Hábito</h2>
-                    <button onClick={() => { toggleCreateHabit() }}> + </button>
-                </nav>
-                {isCreateHabitClicked ? <CreateHabit toggleCreateHabit={toggleCreateHabit} setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} /> : ""}
+
+                <CreateHabit setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} /> 
                 {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} />}
             </Main>
             <Footer />
@@ -54,12 +51,17 @@ export default function HabitsScreen() {
 function CreateHabit(props) {
     const { infosLogin } = useContext(IfosLoginContext);
 
-    const { toggleCreateHabit, setUserHabitsList, userHabitsList } = props;
+    const { setUserHabitsList, userHabitsList } = props;
     const [infosToCreateAHabit, setInfosToCreateAHabit] = useState({
         name: "",
         days: []
     })
-    const [isCancelClicked, setIsCancelClicked] = useState(false)
+    // **********************
+    const [isCreateHabitClicked, setIsCreateHabitClicked] = useState(false);
+    function toggleCreateHabit() {
+        isCreateHabitClicked ? setIsCreateHabitClicked(false) : setIsCreateHabitClicked(true);
+    }
+    // **********************
 
     function setDays(value) {
         let aux = []
@@ -83,37 +85,45 @@ function CreateHabit(props) {
         request.catch(response => alert("Algo deu errado" + response))
     }
 
-    return isCancelClicked ? "" : (
-        <div>
-            <form onSubmit={PostANewHabit} >
-                <input type="text" placeholder="nome do hábito" value={infosToCreateAHabit.name} onChange={e => { setInfosToCreateAHabit({ ...infosToCreateAHabit, name: e.target.value }) }} />
-                <div>
-                    <input type="button" value="D" name="0" onClick={e => { setDays(e.target.name) }} />
-                    <input type="button" value="S" name="1" onClick={e => { setDays(e.target.name) }} />
-                    <input type="button" value="T" name="2" onClick={e => { setDays(e.target.name) }} />
-                    <input type="button" value="Q" name="3" onClick={e => { setDays(e.target.name) }} />
-                    <input type="button" value="Q" name="4" onClick={e => { setDays(e.target.name) }} />
-                    <input type="button" value="S" name="5" onClick={e => { setDays(e.target.name) }} />
-                    <input type="button" value="S" name="6" onClick={e => { setDays(e.target.name) }} />
-                </div>
-                <button onClick={() => { setIsCancelClicked(true) }}>Cacelar</button> <button type="submit">Salvar</button>
-            </form>
-        </div>
-    )
+    return <>
+        <nav>
+            <h2>Meus Hábito</h2>
+            <button onClick={() => { toggleCreateHabit() }}> + </button>
+        </nav>
+
+        {isCreateHabitClicked ? (
+            <div>
+                <form onSubmit={PostANewHabit} >
+                    <input type="text" placeholder="nome do hábito" value={infosToCreateAHabit.name} onChange={e => { setInfosToCreateAHabit({ ...infosToCreateAHabit, name: e.target.value }) }} />
+                    <div>
+                        <input type="button" value="D" name="0" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input type="button" value="S" name="1" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input type="button" value="T" name="2" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input type="button" value="Q" name="3" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input type="button" value="Q" name="4" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input type="button" value="S" name="5" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input type="button" value="S" name="6" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                    </div>
+                    <button onClick={() => { toggleCreateHabit() }}>Cacelar</button> <button type="submit">Salvar</button>
+                </form>
+            </div>
+        ) : ""}
+    </>
+
+
+
 }
 
 
 function ListHabits(props) {
     const { userHabitsList } = props;
-    console.log(userHabitsList)
 
     return (
         userHabitsList.data.map((eachHabit) => {
-            console.log(eachHabit, eachHabit.name, eachHabit.days)
             return (
                 <BoxHabit key={JSON.stringify(eachHabit)}>
-                    <div> <h2>{eachHabit.name}</h2> <span><ion-icon name="trash-outline"></ion-icon></span></div>
-                    
+                    <div> <h2>{eachHabit.name}</h2> <span>Lixo</span></div>
+
                     <section>
                         <WeekDays value="D" name="0" atThisDay={eachHabit.days.includes(0)}> D </WeekDays>
                         <WeekDays value="S" name="1" atThisDay={eachHabit.days.includes(1)}> S </WeekDays>
