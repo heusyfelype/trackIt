@@ -1,13 +1,17 @@
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from "react";
+import { useState, useContext } from "react";
+import axios from 'axios';
 
 
 import logo from '../assets/logo.png';
-import axios from 'axios';
+import InfosLoginContext from "./InfosLoginContext";
+
+
 
 export default function LogInScreen() {
     const navigate = useNavigate();
+    const {setinfosLogin} = useContext(InfosLoginContext)
     const [isUnavailable, setIsUnavaiable] = useState(false)
     const [logInData, setLogInData] = useState({
         email: "",
@@ -17,9 +21,9 @@ export default function LogInScreen() {
     function postInputs(e) {
         e.preventDefault();
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", logInData);
-        request.then((response) => navigate("/habitos", { state: response.data }))
+        request.then((response) => { setinfosLogin(response.data); navigate("/habitos")})
         request.catch((response) => alert(
-        `Algo deu errado, por favor recarregue a página e tente novamente!
+            `Algo deu errado, por favor recarregue a página e tente novamente!
        
         Erro: ${response}`
         ))
@@ -27,17 +31,17 @@ export default function LogInScreen() {
         setIsUnavaiable(true)
     }
     return (
-        <Main>
-            <img src={logo} alt="Logo" />
-            <form onSubmit={postInputs}>
-                <input disabled={isUnavailable} type="email" placeholder='email' name="email" value={logInData.email} onChange={e => { setLogInData({ ...logInData, email: e.target.value }) }} />
-                <input disabled={isUnavailable} type="password" placeholder='senha' name="password" value={logInData.password} onChange={e => { setLogInData({ ...logInData, password: e.target.value }) }} />
-                <button disabled={isUnavailable} type='submit'> Entrar </button>
-            </form>
-            <Link to="/cadastro">
-                Não tem conta? Cadastre-se!
-            </Link>
-        </Main>
+            <Main>
+                <img src={logo} alt="Logo" />
+                <form onSubmit={postInputs}>
+                    <input disabled={isUnavailable} type="email" placeholder='email' name="email" value={logInData.email} onChange={e => { setLogInData({ ...logInData, email: e.target.value }) }} />
+                    <input disabled={isUnavailable} type="password" placeholder='senha' name="password" value={logInData.password} onChange={e => { setLogInData({ ...logInData, password: e.target.value }) }} />
+                    <button disabled={isUnavailable} type='submit'> Entrar </button>
+                </form>
+                <Link to="/cadastro">
+                    Não tem conta? Cadastre-se!
+                </Link>
+            </Main>
     )
 }
 
