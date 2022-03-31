@@ -15,9 +15,6 @@ export default function HabitsScreen() {
 
     const [userHabitsList, setUserHabitsList] = useState({ data: [] })
     const [isCreateHabitClicked, setIsCreateHabitClicked] = useState(false);
-    console.log(
-        userHabitsList
-    )
 
     function toggleCreateHabit() {
         isCreateHabitClicked ? setIsCreateHabitClicked(false) : setIsCreateHabitClicked(true);
@@ -46,7 +43,7 @@ export default function HabitsScreen() {
                     <button onClick={() => { toggleCreateHabit() }}> + </button>
                 </nav>
                 {isCreateHabitClicked ? <CreateHabit toggleCreateHabit={toggleCreateHabit} setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} /> : ""}
-                {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : JSON.stringify(userHabitsList)}
+                {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} />}
             </Main>
             <Footer />
         </>
@@ -62,6 +59,7 @@ function CreateHabit(props) {
         name: "",
         days: []
     })
+    const [isCancelClicked, setIsCancelClicked] = useState(false)
 
     function setDays(value) {
         let aux = []
@@ -81,11 +79,11 @@ function CreateHabit(props) {
         }
 
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", infosToCreateAHabit, config)
-        request.then(response => { setUserHabitsList({...userHabitsList, data: [...userHabitsList.data, response.data]}); toggleCreateHabit() })
+        request.then(response => { setUserHabitsList({ ...userHabitsList, data: [...userHabitsList.data, response.data] }); toggleCreateHabit() })
         request.catch(response => alert("Algo deu errado" + response))
     }
 
-    return (
+    return isCancelClicked ? "" : (
         <div>
             <form onSubmit={PostANewHabit} >
                 <input type="text" placeholder="nome do hábito" value={infosToCreateAHabit.name} onChange={e => { setInfosToCreateAHabit({ ...infosToCreateAHabit, name: e.target.value }) }} />
@@ -98,15 +96,46 @@ function CreateHabit(props) {
                     <input type="button" value="S" name="5" onClick={e => { setDays(e.target.name) }} />
                     <input type="button" value="S" name="6" onClick={e => { setDays(e.target.name) }} />
                 </div>
-                <button type="reset">Cacelar</button> <button type="submit">Salvar</button>
+                <button onClick={() => { setIsCancelClicked(true) }}>Cacelar</button> <button type="submit">Salvar</button>
             </form>
         </div>
     )
 }
 
+
+function ListHabits(props) {
+    const { userHabitsList } = props;
+    console.log(userHabitsList)
+
+    return (
+        userHabitsList.data.map((eachHabit) => {
+            console.log(eachHabit, eachHabit.name, eachHabit.days)
+            return (
+                <BoxHabit key={JSON.stringify(eachHabit)}>
+                    <div> <h2>{eachHabit.name}</h2> <span><ion-icon name="trash-outline"></ion-icon></span></div>
+                    
+                    <section>
+                        <WeekDays value="D" name="0" atThisDay={eachHabit.days.includes(0)}> D </WeekDays>
+                        <WeekDays value="S" name="1" atThisDay={eachHabit.days.includes(1)}> S </WeekDays>
+                        <WeekDays value="T" name="2" atThisDay={eachHabit.days.includes(2)}> T </WeekDays>
+                        <WeekDays value="Q" name="3" atThisDay={eachHabit.days.includes(3)}> Q </WeekDays>
+                        <WeekDays value="Q" name="4" atThisDay={eachHabit.days.includes(4)}> Q </WeekDays>
+                        <WeekDays value="S" name="5" atThisDay={eachHabit.days.includes(5)}> S </WeekDays>
+                        <WeekDays value="S" name="6" atThisDay={eachHabit.days.includes(6)}> S </WeekDays>
+                    </section>
+                </BoxHabit>
+            )
+
+        })
+    )
+
+}
+
+
+
 const Main = styled.main`
     width: 100vw;
-    padding: 70px 0px;
+    padding: 70px 0px 120px 0px;
     min-height: 100vh;
     background-color: #F2F2F2;
 
@@ -134,6 +163,39 @@ const Main = styled.main`
             font-size: 26.976px;
             border: none;
             cursor: pointer;
+        }
+    }
+`
+
+
+const WeekDays = styled.span`
+    background-color: ${(props) => props.atThisDay === true ? "#CFCFCF" : "#FFFFFF"};
+    border: 1px solid #CFCFCF;
+    border-radius: 5px;
+    margin-right: 4px;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+`
+
+const BoxHabit = styled.div`
+    width: 90%;
+    padding: 12px;
+    margin: 10px auto;
+
+    background: #FFFFFF;
+    border-radius: 5px;
+
+    div{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        h2{
+            padding: 8px 0px;
         }
     }
 `

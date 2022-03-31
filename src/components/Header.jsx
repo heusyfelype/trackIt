@@ -26,6 +26,7 @@ const StyledHead = styled.nav`
     font-size: 38.982px;
 
     position: fixed;
+    z-index: 1;
     left: 0px;
     top: 0px;
 
