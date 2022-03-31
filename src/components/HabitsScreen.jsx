@@ -14,11 +14,7 @@ export default function HabitsScreen() {
     const { infosLogin } = useContext(IfosLoginContext);
 
     const [userHabitsList, setUserHabitsList] = useState({ data: [] })
-    // const [isCreateHabitClicked, setIsCreateHabitClicked] = useState(false);
-    console.log(userHabitsList)
-    // function toggleCreateHabit() {
-    //     isCreateHabitClicked ? setIsCreateHabitClicked(false) : setIsCreateHabitClicked(true);
-    // }
+    
 
     useEffect(() => {
         const config = {
@@ -40,7 +36,7 @@ export default function HabitsScreen() {
             <Main>
 
                 <CreateHabit setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} /> 
-                {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} />}
+                {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} setUserHabitsList={setUserHabitsList}/>}
             </Main>
             <Footer />
         </>
@@ -116,13 +112,22 @@ function CreateHabit(props) {
 
 
 function ListHabits(props) {
-    const { userHabitsList } = props;
+    const { userHabitsList, setUserHabitsList } = props;
 
+    const { infosLogin } = useContext(IfosLoginContext);
+    const config = {
+        headers: {
+            Authorization: `Bearer ${infosLogin.token}`
+        }
+    }
+    
+    
     return (
         userHabitsList.data.map((eachHabit) => {
+            console.log(eachHabit)
             return (
                 <BoxHabit key={JSON.stringify(eachHabit)}>
-                    <div> <h2>{eachHabit.name}</h2> <span>Lixo</span></div>
+                    <div> <h2>{eachHabit.name}</h2> <span onClick={() =>{DeleteHabit(eachHabit.id, config, setUserHabitsList)}}><ion-icon name="trash-outline"></ion-icon></span></div>
 
                     <section>
                         <WeekDays value="D" name="0" atThisDay={eachHabit.days.includes(0)}> D </WeekDays>
@@ -139,6 +144,22 @@ function ListHabits(props) {
         })
     )
 
+}
+
+
+function DeleteHabit(id, config, setUserHabitsList){
+    console.log(id, config)
+
+    const res = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
+    res.then(() => {
+        const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config)
+        request.then(response => {
+            const { data } = response;
+            setUserHabitsList({ data })
+        })
+        request.catch(response => alert(response))
+
+    })
 }
 
 
