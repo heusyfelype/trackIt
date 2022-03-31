@@ -14,7 +14,7 @@ export default function Circle() {
                     />
                     <path
                         className="circle"
-                        strokeDasharray="60, 100"
+                        strokeDasharray="60, 100" // para alterar o progresso basta alterar essa 60
                         d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -62,7 +62,6 @@ const StyledCircle = styled.div`
 
       .percentage {
         fill: white;
-        font-family: sans-serif;
         font-size: 0.5em;
         text-anchor: middle;
       }
