@@ -8,13 +8,14 @@ import axios from "axios";
 import Header from "./Header"
 import Footer from "./Footer";
 import IfosLoginContext from "./InfosLoginContext";
+import LoadingButton from "./LoadingButton";
 
 
 export default function HabitsScreen() {
     const { infosLogin } = useContext(IfosLoginContext);
 
     const [userHabitsList, setUserHabitsList] = useState({ data: [] })
-    
+
 
     useEffect(() => {
         const config = {
@@ -35,8 +36,8 @@ export default function HabitsScreen() {
             <Header picture={infosLogin.image} />
             <Main>
 
-                <CreateHabit setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} /> 
-                {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} setUserHabitsList={setUserHabitsList}/>}
+                <CreateHabit setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} />
+                {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} setUserHabitsList={setUserHabitsList} />}
             </Main>
             <Footer />
         </>
@@ -59,6 +60,9 @@ function CreateHabit(props) {
     }
     // **********************
 
+    const [isUnavailable, setIsUnavaiable] = useState(false)
+
+
     function setDays(value) {
         let aux = []
         infosToCreateAHabit.days.includes(value) ?
@@ -77,8 +81,11 @@ function CreateHabit(props) {
         }
 
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", infosToCreateAHabit, config)
-        request.then(response => { setUserHabitsList({ ...userHabitsList, data: [...userHabitsList.data, response.data] }); toggleCreateHabit() })
-        request.catch(response => alert("Algo deu errado" + response))
+        request.then(response => { setUserHabitsList({ ...userHabitsList, data: [...userHabitsList.data, response.data] }); toggleCreateHabit(); setIsUnavaiable(false) })
+        request.catch(response => { alert("Algo deu errado" + response); setIsUnavaiable(false) })
+
+        setIsUnavaiable(true)
+        setInfosToCreateAHabit({ name: "", days: [] })
     }
 
     return <>
@@ -88,21 +95,22 @@ function CreateHabit(props) {
         </nav>
 
         {isCreateHabitClicked ? (
-            <div>
+            <BoxCrateHabit>
                 <form onSubmit={PostANewHabit} >
                     <input type="text" placeholder="nome do hábito" value={infosToCreateAHabit.name} onChange={e => { setInfosToCreateAHabit({ ...infosToCreateAHabit, name: e.target.value }) }} />
                     <div>
-                        <input type="button" value="D" name="0" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input type="button" value="S" name="1" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input type="button" value="T" name="2" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input type="button" value="Q" name="3" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input type="button" value="Q" name="4" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input type="button" value="S" name="5" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input type="button" value="S" name="6" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input disabled={isUnavailable} type="button" value="D" name="0" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input disabled={isUnavailable} type="button" value="S" name="1" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input disabled={isUnavailable} type="button" value="T" name="2" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input disabled={isUnavailable} type="button" value="Q" name="3" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input disabled={isUnavailable} type="button" value="Q" name="4" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input disabled={isUnavailable} type="button" value="S" name="5" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <input disabled={isUnavailable} type="button" value="S" name="6" onClick={e => { setDays(parseInt(e.target.name)) }} />
                     </div>
-                    <button onClick={() => { toggleCreateHabit() }}>Cacelar</button> <button type="submit">Salvar</button>
+                    <button disabled={isUnavailable} onClick={() => { toggleCreateHabit() }}>Cacelar</button>
+                    <button disabled={isUnavailable} type="submit">{isUnavailable ? <LoadingButton /> : "Salvar"}</button>
                 </form>
-            </div>
+            </BoxCrateHabit>
         ) : ""}
     </>
 
@@ -120,14 +128,14 @@ function ListHabits(props) {
             Authorization: `Bearer ${infosLogin.token}`
         }
     }
-    
-    
+
+
     return (
         userHabitsList.data.map((eachHabit) => {
             console.log(eachHabit)
             return (
                 <BoxHabit key={JSON.stringify(eachHabit)}>
-                    <div> <h2>{eachHabit.name}</h2> <span onClick={() =>{DeleteHabit(eachHabit.id, config, setUserHabitsList)}}><ion-icon name="trash-outline"></ion-icon></span></div>
+                    <div> <h2>{eachHabit.name}</h2> <span onClick={() => { DeleteHabit(eachHabit.id, config, setUserHabitsList) }}><ion-icon name="trash-outline"></ion-icon></span></div>
 
                     <section>
                         <WeekDays value="D" name="0" atThisDay={eachHabit.days.includes(0)}> D </WeekDays>
@@ -147,19 +155,22 @@ function ListHabits(props) {
 }
 
 
-function DeleteHabit(id, config, setUserHabitsList){
+function DeleteHabit(id, config, setUserHabitsList) {
     console.log(id, config)
+    const confirmation = window.confirm("Você realmente deseja excluir este hábito?")
+    if (confirmation === true) {
+        const res = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
+        res.then(() => {
+            const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config)
+            request.then(response => {
+                const { data } = response;
+                setUserHabitsList({ data })
+            })
+            request.catch(response => alert(response))
 
-    const res = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
-    res.then(() => {
-        const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config)
-        request.then(response => {
-            const { data } = response;
-            setUserHabitsList({ data })
         })
-        request.catch(response => alert(response))
+    }
 
-    })
 }
 
 
@@ -229,4 +240,8 @@ const BoxHabit = styled.div`
             padding: 8px 0px;
         }
     }
+`
+
+const BoxCrateHabit = styled.section`
+    
 `
