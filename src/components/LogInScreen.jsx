@@ -29,7 +29,7 @@ export default function LogInScreen() {
        
         Erro: ${response}`
             );
-                window.location.reload()
+            window.location.reload()
         }
 
         )
@@ -38,15 +38,17 @@ export default function LogInScreen() {
     }
     return (
         <Main>
-            <img src={logo} alt="Logo" />
-            <form onSubmit={postInputs}>
-                <input disabled={isUnavailable} type="email" placeholder=' email' name="email" value={logInData.email} onChange={e => { setLogInData({ ...logInData, email: e.target.value }) }} />
-                <input disabled={isUnavailable} type="password" placeholder=' senha' name="password" value={logInData.password} onChange={e => { setLogInData({ ...logInData, password: e.target.value }) }} />
-                <button disabled={isUnavailable} type='submit'> {isUnavailable ? <LoadingButton /> : "Entrar"} </button>
-            </form>
-            <Link to="/cadastro">
-                Não tem conta? Cadastre-se!
-            </Link>
+            <div>
+                <img src={logo} alt="Logo" />
+                <form onSubmit={postInputs}>
+                    <input disabled={isUnavailable} type="email" placeholder=' email' name="email" value={logInData.email} onChange={e => { setLogInData({ ...logInData, email: e.target.value }) }} />
+                    <input disabled={isUnavailable} type="password" placeholder=' senha' name="password" value={logInData.password} onChange={e => { setLogInData({ ...logInData, password: e.target.value }) }} />
+                    <button disabled={isUnavailable} type='submit'> {isUnavailable ? <LoadingButton /> : "Entrar"} </button>
+                </form>
+                <Link to="/cadastro">
+                    Não tem conta? Cadastre-se!
+                </Link>
+            </div>
         </Main>
     )
 }
@@ -56,13 +58,21 @@ export default function LogInScreen() {
 const Main = styled.main`
     width: 100vw;
     height: 100vh;
-    padding-bottom: 15vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    
+    div{
+        width: 100%;
+        height: 100vh;
+        max-width: 400px;
+        margin: 0px auto;
+        padding-bottom: 15vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 
     img{
+        max-width: ;
         width: 45%;
     }
     form{

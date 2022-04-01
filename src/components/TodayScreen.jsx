@@ -33,16 +33,16 @@ export default function TodayScreen() {
     }, effectHabits)
 
 
-    function computePercent(array){
+    function computePercent(array) {
         const totalHabits = array.length;
         let concluedHabits = 0;
 
-        for(let each of array){
-            if(each.done === true)
-            concluedHabits += 1;
+        for (let each of array) {
+            if (each.done === true)
+                concluedHabits += 1;
         }
 
-        const percent = parseInt((concluedHabits/totalHabits)*100);
+        const percent = parseInt((concluedHabits / totalHabits) * 100);
         setLoadBarState(percent)
     }
 
@@ -50,11 +50,13 @@ export default function TodayScreen() {
         <>
             <Header picture={infosLogin.image} />
             <Main>
-                <h2> {weekDays[dayjs().$W]}, {("00" + (dayjs().$D)).slice(-2)}/{("00" + (dayjs().$M + 1)).slice(-2)} </h2>
-                <StatusProgresso loadBarState={loadBarState} >{loadBarState === 0 ? "Nenhum hábito concluído ainda" : loadBarState + "% dos hábitos concluídos"}</StatusProgresso>
-                <section>
-                    {listOfTodayHabits.length === 0 ? "" : <Habits config={config} setEffectHabits={setEffectHabits} listOfTodayHabits={listOfTodayHabits} />}
-                </section>
+                <div>
+                    <h2> {weekDays[dayjs().$W]}, {("00" + (dayjs().$D)).slice(-2)}/{("00" + (dayjs().$M + 1)).slice(-2)} </h2>
+                    <StatusProgresso loadBarState={loadBarState} >{loadBarState === 0 ? "Nenhum hábito concluído ainda" : loadBarState + "% dos hábitos concluídos"}</StatusProgresso>
+                    <section>
+                        {listOfTodayHabits.length === 0 ? "" : <Habits config={config} setEffectHabits={setEffectHabits} listOfTodayHabits={listOfTodayHabits} />}
+                    </section>
+                </div>
             </Main>
             <Footer />
         </>
@@ -66,7 +68,6 @@ function Habits(props) {
     const { listOfTodayHabits, setEffectHabits, config } = props;
     const [isUnavailable, setIsUnavaiable] = useState(false)
 
-    console.log(listOfTodayHabits)
     return (
         listOfTodayHabits.map((eachHabit) => {
 
@@ -101,28 +102,52 @@ function PostCheckMark(objectHabit, setEffectHabits, config, setLoadingState, se
 }
 
 
+
+
+
+
+
+
 const Main = styled.main`
     width: 100vw;
     height: 100vh;
     padding: 70px 0px 120px 0px;
     background-color: #F2F2F2;
 
+    h2{
+        font-size: 22.976px;
+        color: #126BA5;
+        line-height: 29px;
+    }
+
+    & > div{
+        margin: 20px auto 0 auto;
+        width: 90%;
+    }
+    section{
+        width: 100%;
+        padding-top: 30px;
+    }
+
 `
 
 const StatusProgresso = styled.p`
+    padding: 5px 0px;
     color: ${(props) => {
-        console.log(props.loadBarState)
-        return (props.loadBarState === 0 ? "grey" : "green")}};
+        return (props.loadBarState === 0 ? "#BABABA" : "#8FC549")
+    }};
 `
 
 const BoxCheckMark = styled.div`
-    width: 90%;
-    margin: 10px auto;
+    width: 100%;
+    background-color: white;
+    margin: 10px 0;
     padding: 13px;
     display: grid;
     grid-template-columns: auto 70px;
-    background-color: #FFFFFF;
+    justify-content: space-between;
     border-radius: 5px;
+
     h3{
         font-size: 20px;
         padding-bottom: 5px;
@@ -150,9 +175,9 @@ const Button = styled.button`
 `
 
 const Sequence = styled.span`
-    color: ${props => props.sequence > 0 ? "green" : "grey"};
+    color: ${props => props.sequence > 0 ? "#8FC549" : "#666666"};
 `
 
 const Record = styled.span`
-    color: ${props => (props.sequence >= props.record && props.record > 0) ? "green" : "grey"};
+    color: ${props => (props.sequence >= props.record && props.record > 0) ? "#8FC549" : "#666666"};
 `

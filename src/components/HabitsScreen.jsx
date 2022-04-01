@@ -35,8 +35,10 @@ export default function HabitsScreen() {
         <>
             <Header picture={infosLogin.image} />
             <Main>
-                <CreateHabit setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} />
-                {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} setUserHabitsList={setUserHabitsList} />}
+                <div>
+                    <CreateHabit setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} />
+                    {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} setUserHabitsList={setUserHabitsList} />}
+                </div>
             </Main>
             <Footer />
         </>
@@ -46,7 +48,7 @@ export default function HabitsScreen() {
 
 function CreateHabit(props) {
     const { infosLogin } = useContext(InfosLoginContext);
-    const {setLoadingState} = useContext(LoadingContext)
+    const { setLoadingState } = useContext(LoadingContext)
 
 
     const { setUserHabitsList, userHabitsList } = props;
@@ -89,7 +91,7 @@ function CreateHabit(props) {
 
     return <>
         <nav>
-            <h2>Meus Hábito</h2>
+            <h2>Meus Hábitos</h2>
             <button onClick={() => { toggleCreateHabit() }}> + </button>
         </nav>
 
@@ -97,17 +99,19 @@ function CreateHabit(props) {
             <BoxCrateHabit>
                 <form onSubmit={PostANewHabit} >
                     <input type="text" placeholder="nome do hábito" value={infosToCreateAHabit.name} onChange={e => { setInfosToCreateAHabit({ ...infosToCreateAHabit, name: e.target.value }) }} />
+                    <section>
+                        <InputDayCreateAHabit dayClicked={{dayClicked:0, arrDays: infosToCreateAHabit.days} } disabled={isUnavailable} type="button" value="D" name="0" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <InputDayCreateAHabit dayClicked={{dayClicked:1, arrDays: infosToCreateAHabit.days} } disabled={isUnavailable} type="button" value="S" name="1" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <InputDayCreateAHabit dayClicked={{dayClicked:2, arrDays: infosToCreateAHabit.days} } disabled={isUnavailable} type="button" value="T" name="2" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <InputDayCreateAHabit dayClicked={{dayClicked:3, arrDays: infosToCreateAHabit.days} } disabled={isUnavailable} type="button" value="Q" name="3" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <InputDayCreateAHabit dayClicked={{dayClicked:4, arrDays: infosToCreateAHabit.days} } disabled={isUnavailable} type="button" value="Q" name="4" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <InputDayCreateAHabit dayClicked={{dayClicked:5, arrDays: infosToCreateAHabit.days} } disabled={isUnavailable} type="button" value="S" name="5" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <InputDayCreateAHabit dayClicked={{dayClicked:6, arrDays: infosToCreateAHabit.days} } disabled={isUnavailable} type="button" value="S" name="6" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                    </section>
                     <div>
-                        <input disabled={isUnavailable} type="button" value="D" name="0" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input disabled={isUnavailable} type="button" value="S" name="1" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input disabled={isUnavailable} type="button" value="T" name="2" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input disabled={isUnavailable} type="button" value="Q" name="3" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input disabled={isUnavailable} type="button" value="Q" name="4" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input disabled={isUnavailable} type="button" value="S" name="5" onClick={e => { setDays(parseInt(e.target.name)) }} />
-                        <input disabled={isUnavailable} type="button" value="S" name="6" onClick={e => { setDays(parseInt(e.target.name)) }} />
+                        <button disabled={isUnavailable} onClick={() => { toggleCreateHabit() }}>Cacelar</button>
+                        <button disabled={isUnavailable} type="submit">{isUnavailable ? <LoadingButton /> : "Salvar"}</button>
                     </div>
-                    <button disabled={isUnavailable} onClick={() => { toggleCreateHabit() }}>Cacelar</button>
-                    <button disabled={isUnavailable} type="submit">{isUnavailable ? <LoadingButton /> : "Salvar"}</button>
                 </form>
             </BoxCrateHabit>
         ) : ""}
@@ -120,7 +124,7 @@ function CreateHabit(props) {
 
 function ListHabits(props) {
     const { userHabitsList, setUserHabitsList } = props;
-    const {setLoadingState} = useContext(LoadingContext)
+    const { setLoadingState } = useContext(LoadingContext)
 
     const { infosLogin } = useContext(InfosLoginContext);
     const config = {
@@ -179,9 +183,22 @@ const Main = styled.main`
     min-height: 100vh;
     background-color: #F2F2F2;
 
+    & > div{
+        margin: 0 auto;
+        width: 90%;
+        max-width: 600px;
+    }
+
+    p{
+        font-size: 17.976px;
+        line-height: 22px;
+        color: #666666;
+        padding-top: 25px ;
+    }
+
     nav {
         width: 100%;
-        padding: 20px 18px;
+        padding: 20px 0px;
         display: flexbox;
         flex-wrap: nowrap;
         justify-content: space-between;
@@ -207,9 +224,20 @@ const Main = styled.main`
     }
 `
 
+const InputDayCreateAHabit = styled.input`
+        width: 30px;
+        height: 30px;
+        margin-right: 4px;
+        background-color: ${(props) => props.dayClicked.arrDays.includes(props.dayClicked.dayClicked) ? "#CFCFCF" : "#FFFFFF"};
+        color: ${(props) => props.dayClicked.arrDays.includes(props.dayClicked.dayClicked) ? "#FFFFFF" : "#CFCFCF"};;
+        border: 1px solid #CFCFCF;
+        border-radius: 5px;
+        cursor: pointer;
+`
 
 const WeekDays = styled.span`
     background-color: ${(props) => props.atThisDay === true ? "#CFCFCF" : "#FFFFFF"};
+    color: ${(props) => props.atThisDay === true ? "#FFFFFF" : "#CFCFCF"};
     border: 1px solid #CFCFCF;
     border-radius: 5px;
     margin-right: 4px;
@@ -222,7 +250,7 @@ const WeekDays = styled.span`
 `
 
 const BoxHabit = styled.div`
-    width: 90%;
+    width: 100%;
     padding: 12px;
     margin: 10px auto;
 
@@ -236,10 +264,63 @@ const BoxHabit = styled.div`
 
         h2{
             padding: 8px 0px;
+            color: #666666;
         }
     }
 `
 
 const BoxCrateHabit = styled.section`
+    width: 100%;
+    padding: 18px;
+    background: #FFFFFF;
+    border-radius: 5px;
     
+
+    & form > input{
+        
+        background: #FFFFFF;
+        border: 1px solid #D5D5D5;
+        box-sizing: border-box;
+        border-radius: 5px;
+        width: 100%;
+        height: 45px;
+        margin-bottom: 6px;
+        color: #666666;
+        
+        &::placeholder{
+            color: #D5D5D5;
+            font-size: 20px;
+        
+        }
+    }
+
+
+    & form div{
+        width: 100%;
+        display: flex;
+        justify-content: right;
+    }
+
+
+    & form div button:nth-child(1){
+        background-color: #FFFFFF;
+        color: #52B6FF;
+        font-size: 15.976px;
+        width: 84px;
+        height: 35px;
+        border: none;
+        border-radius: 5px;
+        margin-top: 30px;
+    }
+    & form div button:nth-child(2){
+        background-color: #52B6FF;
+        color: #FFFFFF;
+        font-size: 15.976px;
+        width: 84px;
+        height: 35px;
+        border: none;
+        border-radius: 5px;
+        margin-top: 30px;
+        cursor: pointer;
+    }
 `
