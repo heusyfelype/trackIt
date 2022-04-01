@@ -1,7 +1,7 @@
 import styled from "styled-components"
 
-export default function Circle() {
-
+export default function Circle(props) {
+  const {loadBarState} = props;
     return (
         <StyledCircle>
             <div className="single-chart">
@@ -14,7 +14,7 @@ export default function Circle() {
                     />
                     <path
                         className="circle"
-                        strokeDasharray="60, 100" // para alterar o progresso basta alterar essa 60
+                        strokeDasharray={`${loadBarState}, 100`} // para alterar o progresso basta alterar essa 60
                         d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"

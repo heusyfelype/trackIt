@@ -7,15 +7,15 @@ import axios from "axios";
 
 import Header from "./Header"
 import Footer from "./Footer";
-import IfosLoginContext from "./InfosLoginContext";
+import InfosLoginContext from "./InfosLoginContext";
 import LoadingButton from "./LoadingButton";
+import LoadingContext from "./LoadingContext";
+
 
 
 export default function HabitsScreen() {
-    const { infosLogin } = useContext(IfosLoginContext);
-
+    const { infosLogin } = useContext(InfosLoginContext);
     const [userHabitsList, setUserHabitsList] = useState({ data: [] })
-
 
     useEffect(() => {
         const config = {
@@ -35,7 +35,6 @@ export default function HabitsScreen() {
         <>
             <Header picture={infosLogin.image} />
             <Main>
-
                 <CreateHabit setUserHabitsList={setUserHabitsList} userHabitsList={userHabitsList} />
                 {userHabitsList.data.length === 0 ? <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear! </p> : <ListHabits userHabitsList={userHabitsList} setUserHabitsList={setUserHabitsList} />}
             </Main>
@@ -46,7 +45,9 @@ export default function HabitsScreen() {
 
 
 function CreateHabit(props) {
-    const { infosLogin } = useContext(IfosLoginContext);
+    const { infosLogin } = useContext(InfosLoginContext);
+    const {setLoadingState} = useContext(LoadingContext)
+
 
     const { setUserHabitsList, userHabitsList } = props;
     const [infosToCreateAHabit, setInfosToCreateAHabit] = useState({
@@ -81,7 +82,7 @@ function CreateHabit(props) {
         }
 
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", infosToCreateAHabit, config)
-        request.then(response => { setUserHabitsList({ ...userHabitsList, data: [...userHabitsList.data, response.data] }); toggleCreateHabit(); setIsUnavaiable(false) })
+        request.then(response => { setUserHabitsList({ ...userHabitsList, data: [...userHabitsList.data, response.data] }); toggleCreateHabit(); setIsUnavaiable(false); setLoadingState(["Atualizar"]) })
         request.catch(response => { alert("Algo deu errado" + response); setIsUnavaiable(false) })
 
         setIsUnavaiable(true)
@@ -121,8 +122,9 @@ function CreateHabit(props) {
 
 function ListHabits(props) {
     const { userHabitsList, setUserHabitsList } = props;
+    const {setLoadingState} = useContext(LoadingContext)
 
-    const { infosLogin } = useContext(IfosLoginContext);
+    const { infosLogin } = useContext(InfosLoginContext);
     const config = {
         headers: {
             Authorization: `Bearer ${infosLogin.token}`
@@ -132,10 +134,9 @@ function ListHabits(props) {
 
     return (
         userHabitsList.data.map((eachHabit) => {
-            console.log(eachHabit)
             return (
                 <BoxHabit key={JSON.stringify(eachHabit)}>
-                    <div> <h2>{eachHabit.name}</h2> <span onClick={() => { DeleteHabit(eachHabit.id, config, setUserHabitsList) }}><ion-icon name="trash-outline"></ion-icon></span></div>
+                    <div> <h2>{eachHabit.name}</h2> <span onClick={() => { DeleteHabit(eachHabit.id, config, setUserHabitsList, setLoadingState) }}><ion-icon name="trash-outline"></ion-icon></span></div>
 
                     <section>
                         <WeekDays value="D" name="0" atThisDay={eachHabit.days.includes(0)}> D </WeekDays>
@@ -155,8 +156,7 @@ function ListHabits(props) {
 }
 
 
-function DeleteHabit(id, config, setUserHabitsList) {
-    console.log(id, config)
+function DeleteHabit(id, config, setUserHabitsList, setLoadingState) {
     const confirmation = window.confirm("Você realmente deseja excluir este hábito?")
     if (confirmation === true) {
         const res = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
@@ -164,7 +164,8 @@ function DeleteHabit(id, config, setUserHabitsList) {
             const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config)
             request.then(response => {
                 const { data } = response;
-                setUserHabitsList({ data })
+                setUserHabitsList({ data });
+                setLoadingState(["Att"])
             })
             request.catch(response => alert(response))
         })

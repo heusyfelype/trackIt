@@ -6,22 +6,25 @@ import HabitsScreen from "./HabitsScreen";
 import TodayScreen from "./TodayScreen";
 import HistoryScreen from "./HistoryScreen";
 import InfosLoginContext from "./InfosLoginContext";
+import LoadingContext from "./LoadingContext";
 import { useState } from "react";
 
 export default function App() {
-    const [infosLogin, setinfosLogin] = useState("Alguma")
+    const [infosLogin, setinfosLogin] = useState("")
+    const [loadingState, setLoadingState] = useState(["nothing"])
     return (
         <BrowserRouter>
-            <InfosLoginContext.Provider value={{infosLogin, setinfosLogin}}>
-                <Routes>
-                    <Route path="/" element={<LogInScreen />} />
-                    <Route path="/cadastro" element={<SignUpScreen />} />
-                    <Route path="/habitos" element={<HabitsScreen />} />
-                    <Route path="/hoje" element={<TodayScreen />} />
-                    <Route path="/historico" element={<HistoryScreen />} />
-                </Routes>
+            <InfosLoginContext.Provider value={{ infosLogin, setinfosLogin }}>
+                <LoadingContext.Provider value={{ loadingState, setLoadingState }}>
+                    <Routes>
+                        <Route path="/" element={<LogInScreen />} />
+                        <Route path="/cadastro" element={<SignUpScreen />} />
+                        <Route path="/habitos" element={<HabitsScreen loadingState={loadingState} setLoadingState={setLoadingState} />} />
+                        <Route path="/hoje" element={<TodayScreen loadingState={loadingState} setLoadingState={setLoadingState} />} />
+                        <Route path="/historico" element={<HistoryScreen />} />
+                    </Routes>
+                </LoadingContext.Provider>
             </InfosLoginContext.Provider>
-
-        </BrowserRouter>
+        </BrowserRouter >
     )
 }
