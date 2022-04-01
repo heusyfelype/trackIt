@@ -167,7 +167,6 @@ function DeleteHabit(id, config, setUserHabitsList) {
                 setUserHabitsList({ data })
             })
             request.catch(response => alert(response))
-
         })
     }
 

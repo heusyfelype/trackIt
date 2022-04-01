@@ -1,16 +1,18 @@
 import styled from "styled-components"
+import { Link, useNavigate } from "react-router-dom"
 
 import Circle from "./Circle"
 
 export default function Footer(props) {
     const { picture } = props
+    const navigate = useNavigate();
 
     return (
         <StyledHead>
-            <span>Hábitos</span>
+            <Link to={"/habitos"}>Hábitos</Link>
             
-            <button> <Circle/> </button>
-            <span>Histórico</span>
+            <button onClick={() => {navigate("/hoje")}}> <Circle/> </button>
+            <Link to={"/historico"}>Histórico</Link>
         </StyledHead>
     )
 }
@@ -41,5 +43,12 @@ const StyledHead = styled.nav`
         height: 90px;
         border-radius: 50%;
         border: none;
+        cursor: pointer;
+    }
+
+    a{
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
     }
 `
