@@ -72,7 +72,6 @@ const Main = styled.main`
     }
 
     img{
-        max-width: ;
         width: 45%;
     }
     form{
