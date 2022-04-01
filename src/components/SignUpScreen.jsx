@@ -39,10 +39,10 @@ export default function SignUpScreen() {
         <Main>
             <img src={logo} alt="Logo" />
             <form onSubmit={postInputs}>
-                <input disabled={isUnavailable} type="email" placeholder='email' name="email" value={signUpData.email} onChange={e => { setSignUpData({ ...signUpData, email: e.target.value }) }} />
-                <input disabled={isUnavailable} type="password" placeholder='senha' name="password" value={signUpData.password} onChange={e => { setSignUpData({ ...signUpData, password: e.target.value }) }} />
-                <input disabled={isUnavailable} type="text" placeholder='nome' name="name" value={signUpData.name} onChange={e => { setSignUpData({ ...signUpData, name: e.target.value }) }} />
-                <input disabled={isUnavailable} type="text" placeholder='foto' name="image" value={signUpData.image} onChange={e => { setSignUpData({ ...signUpData, image: e.target.value }) }} />
+                <input disabled={isUnavailable} type="email" placeholder=' email' name="email" value={signUpData.email} onChange={e => { setSignUpData({ ...signUpData, email: e.target.value }) }} />
+                <input disabled={isUnavailable} type="password" placeholder=' senha' name="password" value={signUpData.password} onChange={e => { setSignUpData({ ...signUpData, password: e.target.value }) }} />
+                <input disabled={isUnavailable} type="text" placeholder=' nome' name="name" value={signUpData.name} onChange={e => { setSignUpData({ ...signUpData, name: e.target.value }) }} />
+                <input disabled={isUnavailable} type="text" placeholder=' foto' name="image" value={signUpData.image} onChange={e => { setSignUpData({ ...signUpData, image: e.target.value }) }} />
                 <button disabled={isUnavailable} type='submit'> {isUnavailable ? <LoadingButton /> : "Eviar"} </button>
             </form>
             <Link to={"/"}> Já tem uma conta? Faça login! </Link>
@@ -57,28 +57,55 @@ export default function SignUpScreen() {
 const Main = styled.main`
     width: 100vw;
     height: 100vh;
+    padding-bottom: 15vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
 
     img{
         width: 180px;
     }
     form{
+        width: 88%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin: 30px auto;
+        input{
+            background: #FFFFFF;
+            border: 1px solid #D5D5D5;
+            box-sizing: border-box;
+            border-radius: 5px;
+            width: 100%;
+            height: 45px;
+            margin-bottom: 6px;
+            color: #666666;
+            
+            &::placeholder{
+                color: #D5D5D5;
+                font-size: 20px;
+            }
+        }
     }
 
     button{
         cursor: pointer;
+        border: none;
+        width: 100%;
+        height: 45px;
+        background: #52B6FF;
+        border-radius: 4.63636px;
+        color: #FFFFFF;
+        font-size: 20.976px;
     }
 
     a{
         cursor: pointer;
+        color: #52B6FF;
     }
+
     input:disabled{
         color: #ccc
     }

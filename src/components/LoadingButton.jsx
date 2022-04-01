@@ -14,36 +14,42 @@ export default function LoadingButton() {
 }
 
 const Loading = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
   .lds-ellipsis {
     display: inline-block;
     position: relative;
     width: 80px;
-    height: 80px;
+    margin: 0 auto;
+    min-height: 20px;
+    
   }
   .lds-ellipsis div {
     position: absolute;
-    top: 33px;
+    top: 35%;
     width: 13px;
     height: 13px;
     border-radius: 50%;
     background: #fff;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    
   }
   .lds-ellipsis div:nth-child(1) {
     left: 8px;
-    animation: lds-ellipsis1 0.6s infinite;
+    animation: lds-ellipsis1 0.8s infinite;
   }
   .lds-ellipsis div:nth-child(2) {
     left: 8px;
-    animation: lds-ellipsis2 0.6s infinite;
+    animation: lds-ellipsis2 0.8s infinite;
   }
   .lds-ellipsis div:nth-child(3) {
     left: 32px;
-    animation: lds-ellipsis2 0.6s infinite;
+    animation: lds-ellipsis2 0.8s infinite;
   }
   .lds-ellipsis div:nth-child(4) {
     left: 56px;
-    animation: lds-ellipsis3 0.6s infinite;
+    animation: lds-ellipsis3 0.8s infinite;
   }
   @keyframes lds-ellipsis1 {
     0% {

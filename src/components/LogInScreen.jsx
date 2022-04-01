@@ -40,8 +40,8 @@ export default function LogInScreen() {
         <Main>
             <img src={logo} alt="Logo" />
             <form onSubmit={postInputs}>
-                <input disabled={isUnavailable} type="email" placeholder='email' name="email" value={logInData.email} onChange={e => { setLogInData({ ...logInData, email: e.target.value }) }} />
-                <input disabled={isUnavailable} type="password" placeholder='senha' name="password" value={logInData.password} onChange={e => { setLogInData({ ...logInData, password: e.target.value }) }} />
+                <input disabled={isUnavailable} type="email" placeholder=' email' name="email" value={logInData.email} onChange={e => { setLogInData({ ...logInData, email: e.target.value }) }} />
+                <input disabled={isUnavailable} type="password" placeholder=' senha' name="password" value={logInData.password} onChange={e => { setLogInData({ ...logInData, password: e.target.value }) }} />
                 <button disabled={isUnavailable} type='submit'> {isUnavailable ? <LoadingButton /> : "Entrar"} </button>
             </form>
             <Link to="/cadastro">
@@ -56,27 +56,57 @@ export default function LogInScreen() {
 const Main = styled.main`
     width: 100vw;
     height: 100vh;
+    padding-bottom: 15vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
 
     img{
-        width: 180px;
+        width: 45%;
     }
     form{
+        width: 88%;
+        height: 150px;
+        margin: 30px 0px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        
+
+        input{
+            background: #FFFFFF;
+            border: 1px solid #D5D5D5;
+            box-sizing: border-box;
+            border-radius: 5px;
+            width: 100%;
+            height: 45px;
+            margin-bottom: 6px;
+            color: #666666;
+            
+            &::placeholder{
+                color: #D5D5D5;
+                font-size: 20px;
+            }
+        }
+        
     }
 
     button{
         cursor: pointer;
+        border: none;
+        width: 100%;
+        height: 45px;
+        background: #52B6FF;
+        border-radius: 4.63636px;
+        color: #FFFFFF;
+        font-size: 20.976px;
     }
 
     a{
         cursor: pointer;
+        color: #52B6FF;
     }
 
     input:disabled{
