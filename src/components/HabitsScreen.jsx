@@ -63,7 +63,6 @@ function CreateHabit(props) {
 
     const [isUnavailable, setIsUnavaiable] = useState(false)
 
-
     function setDays(value) {
         let aux = []
         infosToCreateAHabit.days.includes(value) ?
@@ -80,12 +79,11 @@ function CreateHabit(props) {
                 Authorization: `Bearer ${infosLogin.token}`
             }
         }
-
+        setIsUnavaiable(true)
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", infosToCreateAHabit, config)
         request.then(response => { setUserHabitsList({ ...userHabitsList, data: [...userHabitsList.data, response.data] }); toggleCreateHabit(); setIsUnavaiable(false); setLoadingState(["Atualizar"]) })
-        request.catch(response => { alert("Algo deu errado" + response); setIsUnavaiable(false) })
+        request.catch(response => { alert("Algo deu errado" + response); setIsUnavaiable(false); setLoadingState(["Atualizar"]) })
 
-        setIsUnavaiable(true)
         setInfosToCreateAHabit({ name: "", days: [] })
     }
 

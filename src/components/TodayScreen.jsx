@@ -13,6 +13,7 @@ export default function TodayScreen() {
     const weekDays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const { infosLogin } = useContext(InfosLoginContext);
     const { setLoadingState } = useContext(LoadingContext)
+    const [loadBarState, setLoadBarState] = useState(0)
 
 
     const [listOfTodayHabits, setListOfTodayHabits] = useState([])
@@ -26,17 +27,31 @@ export default function TodayScreen() {
     }
     useEffect(() => {
         const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
-        request.then(response => { setListOfTodayHabits(response.data) })
+        request.then(response => { setListOfTodayHabits(response.data); computePercent(response.data) })
         request.catch(response => { alert(response) })
 
     }, effectHabits)
+
+
+    function computePercent(array){
+        const totalHabits = array.length;
+        let concluedHabits = 0;
+
+        for(let each of array){
+            if(each.done === true)
+            concluedHabits += 1;
+        }
+
+        const percent = parseInt((concluedHabits/totalHabits)*100);
+        setLoadBarState(percent)
+    }
 
     return (
         <>
             <Header picture={infosLogin.image} />
             <Main>
                 <h2> {weekDays[dayjs().$W]}, {("00" + (dayjs().$D)).slice(-2)}/{("00" + (dayjs().$M + 1)).slice(-2)} </h2>
-                <p>{}</p>
+                <StatusProgresso loadBarState={loadBarState} >{loadBarState === 0 ? "Nenhum hábito concluído ainda" : loadBarState + "% dos hábitos concluídos"}</StatusProgresso>
                 <section>
                     {listOfTodayHabits.length === 0 ? "" : <Habits config={config} setEffectHabits={setEffectHabits} listOfTodayHabits={listOfTodayHabits} />}
                 </section>
@@ -91,6 +106,13 @@ const Main = styled.main`
     height: 100vh;
     padding: 70px 0px 120px 0px;
     background-color: #F2F2F2;
+
+`
+
+const StatusProgresso = styled.p`
+    color: ${(props) => {
+        console.log(props.loadBarState)
+        return (props.loadBarState === 0 ? "grey" : "green")}};
 `
 
 const BoxCheckMark = styled.div`
