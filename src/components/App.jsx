@@ -11,7 +11,7 @@ import { useState } from "react";
 
 export default function App() {
     const [infosLogin, setinfosLogin] = useState("")
-    const [loadingState, setLoadingState] = useState(["nothing"])
+    const [loadingState, setLoadingState] = useState([0])
     return (
         <BrowserRouter>
             <InfosLoginContext.Provider value={{ infosLogin, setinfosLogin }}>

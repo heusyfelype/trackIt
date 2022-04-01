@@ -12,8 +12,11 @@ import axios from 'axios';
 export default function TodayScreen() {
     const weekDays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const { infosLogin } = useContext(InfosLoginContext);
+    const { setLoadingState } = useContext(LoadingContext)
+
+
     const [listOfTodayHabits, setListOfTodayHabits] = useState([])
-    const [effectHabits, setEffectHabits] = useState([true])
+    const [effectHabits, setEffectHabits] = useState(["something"])
     const dayjs = require('dayjs')
 
     const config = {
@@ -25,7 +28,7 @@ export default function TodayScreen() {
         const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
         request.then(response => { setListOfTodayHabits(response.data) })
         request.catch(response => { alert(response) })
-        
+
     }, effectHabits)
 
     return (
@@ -33,7 +36,7 @@ export default function TodayScreen() {
             <Header picture={infosLogin.image} />
             <Main>
                 <h2> {weekDays[dayjs().$W]}, {("00" + (dayjs().$D)).slice(-2)}/{("00" + (dayjs().$M + 1)).slice(-2)} </h2>
-                <p>Nenhum hábito concluido ainda</p>
+                <p>{}</p>
                 <section>
                     {listOfTodayHabits.length === 0 ? "" : <Habits config={config} setEffectHabits={setEffectHabits} listOfTodayHabits={listOfTodayHabits} />}
                 </section>
@@ -44,30 +47,42 @@ export default function TodayScreen() {
 }
 
 function Habits(props) {
-    const {setLoadingState} = useContext(LoadingContext)
+    const { setLoadingState } = useContext(LoadingContext)
     const { listOfTodayHabits, setEffectHabits, config } = props;
+    const [isUnavailable, setIsUnavaiable] = useState(false)
+
+    console.log(listOfTodayHabits)
     return (
         listOfTodayHabits.map((eachHabit) => {
+
             return (
                 <BoxCheckMark key={eachHabit.id}>
                     <div>
                         <h3>{eachHabit.name}</h3>
-                        <p> Sequencia atual: <span>{eachHabit.currentSequence}</span>  dias</p>
-                        <p> Seu recorde: <span> {eachHabit.highestSequence} </span> dias</p>
+                        <p> Sequencia atual: <Sequence sequence={eachHabit.currentSequence}> {eachHabit.currentSequence} dias</Sequence></p>
+                        <p> Seu recorde: <Record sequence={eachHabit.currentSequence} record={eachHabit.highestSequence}> {eachHabit.highestSequence} dias </Record> </p>
                     </div>
-                    <Button isdone={eachHabit.done} onClick={() => { PostCheckMark(eachHabit, setEffectHabits, config, setLoadingState);  }}><ion-icon name="checkmark-outline"></ion-icon></Button>
+                    <Button
+                        disabled={isUnavailable}
+                        isdone={eachHabit.done}
+                        onClick={() => { PostCheckMark(eachHabit, setEffectHabits, config, setLoadingState, setIsUnavaiable); setIsUnavaiable(true) }}>
+                        <ion-icon name="checkmark-outline"></ion-icon>
+                    </Button>
                 </BoxCheckMark>
             )
         })
     )
 }
 
-function PostCheckMark(objectHabit, setEffectHabits, config, setLoadingState) {
+function PostCheckMark(objectHabit, setEffectHabits, config, setLoadingState, setIsUnavaiable) {
+
     const id = objectHabit.id
-    let boobleanCheck = objectHabit.done ? "uncheck" : "check";
-    
-    let request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/${boobleanCheck}`, {}, config);
-    request.then(() => {setEffectHabits([id]); setLoadingState(["Atualizar"])})
+    let booleanCheck = objectHabit.done ? "uncheck" : "check";
+    const arr = new Array(booleanCheck + id);
+
+    let request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/${booleanCheck}`, {}, config);
+    request.then(() => { setEffectHabits(arr); setLoadingState(["Atualizar"]); setIsUnavaiable(false) })
+    request.catch((response) => { alert("Algo deu errado! Erro: " + response) })
 }
 
 
@@ -86,7 +101,6 @@ const BoxCheckMark = styled.div`
     grid-template-columns: auto 70px;
     background-color: #FFFFFF;
     border-radius: 5px;
-
     h3{
         font-size: 20px;
         padding-bottom: 5px;
@@ -94,9 +108,6 @@ const BoxCheckMark = styled.div`
     p{
         font-size: 13px;
     }
-
-    
-
     ion-icon{
         font-size: 40px;
         --ionicon-stroke-width: 80px;
@@ -114,4 +125,12 @@ const Button = styled.button`
     border-radius: 5px;
     background-color: ${props => props.isdone ? "#8FC549" : "#E7E7E7"};
     cursor: pointer;
+`
+
+const Sequence = styled.span`
+    color: ${props => props.sequence > 0 ? "green" : "grey"};
+`
+
+const Record = styled.span`
+    color: ${props => (props.sequence >= props.record && props.record > 0) ? "green" : "grey"};
 `

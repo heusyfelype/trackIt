@@ -11,9 +11,9 @@ import Circle from "./Circle"
 export default function Footer(props) {
 
     const { infosLogin } = useContext(InfosLoginContext);
-    const {loadingState} = useContext(LoadingContext)
+    const {loadingState, setLoadingState} = useContext(LoadingContext)
     const [loadBarState, setLoadBarState] = useState(0)
-    console.log(loadBarState)
+    // console.log(loadBarState)
 
     useEffect(() => {
         const config = {
